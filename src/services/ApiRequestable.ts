@@ -1,11 +1,11 @@
-import axios, { Method } from "axios";
+import axios, {Method} from 'axios';
 import config from '../config';
 
-export interface IRequestConfig{
+export interface IRequestConfig {
   baseUrl?: string;
 }
 
-export interface IRequestResult{
+export interface IRequestResult {
   data?: any;
   total?: number;
   page?: number;
@@ -13,7 +13,7 @@ export interface IRequestResult{
   offset?: number;
 }
 
-export interface IApiRequestable <T = any, S = any> {
+export interface IApiRequestable<S = any> {
   body?: S;
   configuration?: IRequestConfig;
   execute?: () => Promise<IRequestResult>;
@@ -26,9 +26,12 @@ export interface IApiRequestable <T = any, S = any> {
   toUrlAndQuery?: () => string;
 }
 
-export declare type ApiRequestableConfig = Pick<IApiRequestable, 'method' | 'path' | 'params' | 'headers' | 'body'>
+export declare type ApiRequestableConfig = Pick<
+  IApiRequestable,
+  'method' | 'path' | 'params' | 'headers' | 'body'
+>;
 
-export class ApiRequestable<T = any, S = any> implements IApiRequestable {
+export class ApiRequestable<S = any> implements IApiRequestable {
   public body: S;
   public configuration: IRequestConfig;
   public headers: any;
@@ -40,29 +43,32 @@ export class ApiRequestable<T = any, S = any> implements IApiRequestable {
   constructor(configuration?: ApiRequestableConfig) {
     this.body = Object.assign({}, configuration && configuration.body);
     this.configuration = config.Apis.baseUrl as IRequestConfig;
-    this.headers = Object.assign({}, {"app-id": config.Apis.appId }, configuration && configuration.headers);
+    this.headers = Object.assign(
+      {},
+      {'app-id': config.Apis.appId},
+      configuration && configuration.headers,
+    );
     this.method = (configuration && configuration.method) || 'GET';
     this.params = (configuration && configuration.params) || null;
-    this.paramsSerialized = "";
+    this.paramsSerialized = '';
     this.path = (configuration && configuration.path) || '';
   }
 
   public serializeParams = (): string => {
     const {params} = this;
     let str = [];
-    for (let p in params) 
-      if(params.hasOwnProperty(p)){
-        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(params[p]));
+    for (let p in params)
+      if (params.hasOwnProperty(p)) {
+        str.push(encodeURIComponent(p) + '=' + encodeURIComponent(params[p]));
       }
 
     return str.join('&');
+  };
 
-  }
-
-  public toUrlAndQuery():string {
-    const params = this.params ? "?".concat(this.serializeParams()) : "";
+  public toUrlAndQuery(): string {
+    const params = this.params ? '?'.concat(this.serializeParams()) : '';
     return `${this.configuration.baseUrl}${this.path}${params}`;
-  } 
+  }
 
   public execute(): Promise<IRequestResult> {
     return new Promise<IRequestResult>((resolve, reject) => {
@@ -71,11 +77,11 @@ export class ApiRequestable<T = any, S = any> implements IApiRequestable {
       const data = this.body;
 
       axios({method, url, headers, data})
-      .then((res) => {
-        let result = res.data as IRequestResult;
-        resolve(result);
-      })
-      .catch(err => reject(err))
-    })
+        .then((res) => {
+          let result = res.data as IRequestResult;
+          resolve(result);
+        })
+        .catch((err) => reject(err));
+    });
   }
 }
