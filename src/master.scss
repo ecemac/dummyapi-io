@@ -4,7 +4,6 @@
 html,
 body,
 #root {
-  height: 100vh;
   background-color: #454dab;
   background-image: linear-gradient(
     180deg,
@@ -19,15 +18,22 @@ body,
 
 #wrapper {
   max-width: 1140px;
-  height: 100vh;
   margin: 0 auto;
   position: relative;
 }
 
 .grid {
   padding: 10px 0;
+  min-height: calc(100vh - 80px);
 }
 
 .centered {
   margin-top: 60px !important;
+  min-height: calc(100vh - 140px);
+}
+
+.flex {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
 }

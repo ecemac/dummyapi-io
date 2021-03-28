@@ -5,8 +5,8 @@ export interface IRequestConfig {
   baseUrl?: string;
 }
 
-export interface IRequestResult {
-  data?: any;
+export interface IRequestResult<T = []> {
+  data?: T;
   total?: number;
   page?: number;
   limit?: number;
@@ -67,7 +67,9 @@ export class ApiRequestable<S = any> implements IApiRequestable {
 
   public toUrlAndQuery(): string {
     const params = this.params ? '?'.concat(this.serializeParams()) : '';
-    return `${this.configuration.baseUrl}${this.path}${params}`;
+    console.log('config: ', this.configuration);
+    console.log('path: ', this.path);
+    return `${this.configuration}${this.path}${params}`;
   }
 
   public execute(): Promise<IRequestResult> {
